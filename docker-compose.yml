@@ -1,4 +1,5 @@
 version: '3.5'
+
 services:
   discord-webhook-handler:
     restart: always
@@ -7,9 +8,19 @@ services:
     ports:
       - "6578:3000"
     environment:
-      - PORT=3000
+      - PORT=${PORT}
+
+      # Discord Webhook 1
+      - DISCORD_WEBHOOK_1_NAMESPACE=${DISCORD_WEBHOOK_1_NAMESPACE}
+      - DISCORD_WEBHOOK_1_URL=${DISCORD_WEBHOOK_1_URL}
+
+      # Discord Webhook 2
+      - DISCORD_WEBHOOK_2_NAMESPACE=${DISCORD_WEBHOOK_2_NAMESPACE}
+      - DISCORD_WEBHOOK_2_URL=${DISCORD_WEBHOOK_2_URL}
+
     networks:
       - nginx-network
+
 networks:
   nginx-network:
     external: true
