@@ -1,0 +1,15 @@
+version: '3.5'
+services:
+  discord-webhook-handler:
+    restart: always
+    container_name: discord-webhook-container
+    build: .
+    ports:
+      - "6578:3000"
+    environment:
+      - PORT=3000
+    networks:
+      - nginx-network
+networks:
+  nginx-network:
+    external: true
