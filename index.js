@@ -7,16 +7,28 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Parse DISCORD_WEBHOOK_URLS from environment variables
-const webhookUrls = [
-  {
-    namespace: process.env.DISCORD_WEBHOOK_1_NAMESPACE,
-    webhook_url: process.env.DISCORD_WEBHOOK_1_URL
-  },
-  {
-    namespace: process.env.DISCORD_WEBHOOK_2_NAMESPACE,
-    webhook_url: process.env.DISCORD_WEBHOOK_2_URL
+// Dynamically load all Discord webhooks from environment variables
+const webhookUrls = [];
+
+// Iterate over all env keys
+Object.keys(process.env).forEach((key) => {
+  const match = key.match(/^DISCORD_WEBHOOK_(\w+)_URL$/); // Match keys like DISCORD_WEBHOOK_AI_CHATBOT_URL
+  if (match) {
+    const namespaceKey = `DISCORD_WEBHOOK_${match[1]}_NAMESPACE`;
+    const urlKey = key;
+
+    const namespace = process.env[namespaceKey];
+    const url = process.env[urlKey];
+
+    if (namespace && url) {
+      webhookUrls.push({ namespace, webhook_url: url });
+      console.log(`Loaded webhook: ${namespace} -> ${url}`);
+    }
   }
-];
+});
+
+console.log('All loaded webhooks:', webhookUrls);
+
 
 // Helper function to get the appropriate Discord webhook URL based on namespace only
 const getDiscordWebhookUrl = (namespace) => {
